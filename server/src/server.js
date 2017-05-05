@@ -146,7 +146,7 @@ db.collection('users').findOne({
     // a final action: Sending the response to the client.
     function processNextFeedItem(i) {
       // Asynchronously resolve a feed item.
-      getFeedItemSync(feedData.contents[i], function(err, feedItem) {
+      getFeedItem(feedData.contents[i], function(err, feedItem) {
         if (err) {
           // Pass an error to the callback.
           callback(err);
@@ -182,7 +182,7 @@ db.collection('users').findOne({
   function getUserIdFromToken(authorizationLine) {
     try {
       // Cut off "Bearer " from the header value.
-      var token = authorizationLine.slice(7);
+var token = authorizationLine.slice(7);
       // Convert the base64 string to a UTF-8 string.
       var regularString = new Buffer(token, 'base64').toString('utf8');
       // Convert the UTF-8 string into a JavaScript object.
@@ -352,7 +352,7 @@ app.get('/user/:userid/feed', function(req, res) {
       // Update text content of update.
       feedItem.contents.contents = req.body;
       writeDocument('feedItems', feedItem);
-      res.send(getFeedItemSync(feedItemId));
+      res.send(getFeedItem(feedItemId));
     } else {
       // 401: Unauthorized.
       res.status(401).end();
@@ -411,7 +411,7 @@ app.get('/user/:userid/feed', function(req, res) {
       res.send(feedItemIDs.filter((feedItemID) => {
         var feedItem = readDocument('feedItems', feedItemID);
         return feedItem.contents.contents.toLowerCase().indexOf(queryText) !== -1;
-      }).map(getFeedItemSync));
+      }).map(getFeedItem));
     } else {
       // 400: Bad Request.
       res.status(400).end();
@@ -437,7 +437,7 @@ app.get('/user/:userid/feed', function(req, res) {
       res.status(201);
       res.set('Location', '/feeditem/' + feedItemId + "/comments/" + index);
       // Return a resolved version of the feed item.
-      res.send(getFeedItemSync(feedItemId));
+      res.send(getFeedItem(feedItemId));
     } else {
       // Unauthorized.
       res.status(401).end();
